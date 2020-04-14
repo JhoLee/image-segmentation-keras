@@ -91,6 +91,7 @@ dependencies:
   - tensorflow-gpu=1.10.0=hf154084_0
   - termcolor=1.1.0=py_2
   - tk=8.6.10=hed695b0_0
+  - tqdm=4.45.0=pyh9f0ad1d_0
   - werkzeug=1.0.1=pyh9f0ad1d_0
   - wheel=0.34.2=py_1
   - x264=1!152.20180806=h14c3975_0
