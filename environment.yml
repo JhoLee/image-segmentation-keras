@@ -8,6 +8,7 @@ dependencies:
   - _tflow_select=2.1.0=gpu
   - absl-py=0.9.0=py36_0
   - astor=0.7.1=py_0
+  - backcall=0.1.0=py_0
   - bzip2=1.0.8=h516909a_2
   - c-ares=1.15.0=h516909a_1001
   - ca-certificates=2020.4.5.1=hecc5488_0
@@ -41,7 +42,10 @@ dependencies:
   - hdf5=1.10.5=nompi_h3c11f04_1104
   - icu=64.2=he1b5a44_1
   - imageio=2.8.0=py_0
+  - ipython=7.13.0=py36h9f0ad1d_2
+  - ipython_genutils=0.2.0=py_1
   - jasper=1.900.1=h07fcdf6_1006
+  - jedi=0.16.0=py36h9f0ad1d_1
   - jpeg=9c=h14c3975_1001
   - keras=2.0.8=py36hc0b6f7c_0
   - kiwisolver=1.2.0=py36hdb11119_0
@@ -82,13 +86,19 @@ dependencies:
   - opencv=4.2.0=py36_3
   - openh264=1.8.0=hdbcaa40_1000
   - openssl=1.1.1f=h516909a_0
+  - parso=0.7.0=pyh9f0ad1d_0
   - pcre=8.44=he1b5a44_0
+  - pexpect=4.8.0=py36h9f0ad1d_1
+  - pickleshare=0.7.5=py36h9f0ad1d_1001
   - pillow=7.1.1=py36h8328e55_0
   - pip=20.0.2=py_2
   - pixman=0.38.0=h516909a_1003
+  - prompt-toolkit=3.0.5=py_0
   - protobuf=3.11.4=py36h831f99a_1
   - pthread-stubs=0.4=h14c3975_1001
+  - ptyprocess=0.6.0=py_1001
   - py-opencv=4.2.0=py36h95af2a2_3
+  - pygments=2.6.1=py_0
   - pyparsing=2.4.7=pyh9f0ad1d_0
   - python=3.6.10=h8356626_1010_cpython
   - python-dateutil=2.8.1=py_0
@@ -111,6 +121,8 @@ dependencies:
   - toolz=0.10.0=py_0
   - tornado=6.0.4=py36h8c4c3a4_1
   - tqdm=4.45.0=pyh9f0ad1d_0
+  - traitlets=4.3.3=py36h9f0ad1d_1
+  - wcwidth=0.1.9=pyh9f0ad1d_0
   - werkzeug=1.0.1=pyh9f0ad1d_0
   - wheel=0.34.2=py_1
   - x264=1!152.20180806=h14c3975_0
