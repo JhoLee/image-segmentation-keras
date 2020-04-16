@@ -143,5 +143,4 @@ dependencies:
   - zstd=1.4.4=h6597ccf_3
   - pip:
     - imgaug==0.4.0
-prefix: /home/jho/anaconda3/envs/seg-keras-tf10-py36
 
