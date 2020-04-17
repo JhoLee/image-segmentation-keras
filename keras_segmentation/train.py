@@ -1,5 +1,9 @@
 import argparse
+import datetime
 import json
+
+import keras
+
 from .data_utils.data_loader import image_segmentation_generator, \
     verify_segmentation_dataset
 import os
@@ -45,7 +49,8 @@ def train(model,
           auto_resume_checkpoint=False,
           load_weights=None,
           steps_per_epoch=512,
-          optimizer_name='adadelta'
+          optimizer_name='adadelta',
+          log_dir=''
           ):
 
     from .models.all_models import model_from_name
@@ -114,21 +119,42 @@ def train(model,
             val_images, val_annotations,  val_batch_size,
             n_classes, input_height, input_width, output_height, output_width)
 
+    # Define callbacks
+    tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir) if log_dir != '' else None
+    checkpoint = checkpoints_path + "-{epoch:03d}.h5"
+    checkpoint_callback = keras.callbacks.ModelCheckpoint(checkpoint, verbose=1, save_best_only=False, mode='max')
+    callbacks = [
+        tensorboard_callback,
+        checkpoint_callback,
+    ]
+    ##
+    
     if not validate:
-        for ep in range(epochs):
-            print("Starting Epoch ", ep)
-            model.fit_generator(train_gen, steps_per_epoch, epochs=1)
-            if checkpoints_path is not None:
-                model.save_weights(checkpoints_path + "." + str(ep))
-                print("saved ", checkpoints_path + ".model." + str(ep))
-            print("Finished Epoch", ep)
+        print("Start...")
+        model.fit_generator(train_gen, steps_per_epoch, epochs=epochs, callbacks=callbacks)
+        print("End")
     else:
-        for ep in range(epochs):
-            print("Starting Epoch ", ep)
-            model.fit_generator(train_gen, steps_per_epoch,
-                                validation_data=val_gen,
-                                validation_steps=200,  epochs=1)
-            if checkpoints_path is not None:
-                model.save_weights(checkpoints_path + "." + str(ep))
-                print("saved ", checkpoints_path + ".model." + str(ep))
-            print("Finished Epoch", ep)
+        print("Start validation...")
+        model.fit_generator(train_gen, steps_per_epoch, validation_data=val_gen, validation_steps=200, epochs=epochs, callbacks=callbacks)
+        print("End validation")
+#     if not validate:
+#         for ep in range(epochs):
+#             print("Starting Epoch ", ep)
+#             model.fit_generator(train_gen, steps_per_epoch, epochs=1, callbacks=callbacks)
+#             if checkpoints_path is not None:
+#                 model.save_weights(checkpoints_path + "." + str(ep))
+#                 print("saved ", checkpoints_path + ".model." + str(ep))
+#             print("Finished Epoch", ep)
+#     else:
+#         for ep in range(epochs):
+#             print("Starting Epoch ", ep)
+#             model.fit_generator(train_gen, steps_per_epoch,
+#                                 validation_data=val_gen,
+#                                 validation_steps=200,  epochs=1, callbacks=callbacks)
+#             # TODO: Add tensorboard callback
+#             if checkpoints_path is not None:
+#                 model.save_weights(checkpoints_path + "." + str(ep))
+#                 print("saved ", checkpoints_path + ".model." + str(ep))
+#             print("Finished Epoch", ep)
+
+            
