@@ -50,7 +50,8 @@ def train(model,
           load_weights=None,
           steps_per_epoch=512,
           optimizer_name='adadelta',
-          log_dir=''
+          log_dir='',
+          save_best_only=False,
           ):
 
     from .models.all_models import model_from_name
@@ -121,8 +122,8 @@ def train(model,
 
     # Define callbacks
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir) if log_dir != '' else None
-    checkpoint = checkpoints_path + "-{epoch:03d}.h5"
-    checkpoint_callback = keras.callbacks.ModelCheckpoint(checkpoint, verbose=1, save_best_only=False, mode='max')
+    checkpoint = checkpoints_path + "-{epoch:02d}.h5"
+    checkpoint_callback = keras.callbacks.ModelCheckpoint(checkpoint, monitor='val_loss', verbose=1, save_best_only=save_best_only, mode='min')
     callbacks = [
         tensorboard_callback,
         checkpoint_callback,
