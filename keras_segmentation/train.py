@@ -121,13 +121,42 @@ def train(model,
             n_classes, input_height, input_width, output_height, output_width)
 
     # Define callbacks
-    tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir) if log_dir != '' else None
-    checkpoint = checkpoints_path + "-{epoch:02d}.h5"
-    checkpoint_callback = keras.callbacks.ModelCheckpoint(checkpoint, monitor='val_loss', verbose=1, save_best_only=save_best_only, mode='min')
+    tensorboard_callback = keras.callbacks.TensorBoard(
+                log_dir=log_dir,
+                histogram_freq=0,
+                write_images=True
+    ) if log_dir != '' else None
+    
+    checkpoint = checkpoints_path + "-ep{epoch:02d}.h5"
+    checkpoint_callback = keras.callbacks.ModelCheckpoint(
+        checkpoint,
+        verbose=1,
+        save_best_only=False
+    )
     callbacks = [
         tensorboard_callback,
         checkpoint_callback,
-    ]
+    ]  
+    if save_best_only:
+        checkpoint_val_loss = checkpoints_path + "-ep{epoch:02d}-val_loss{val_loss:.2f}.h5"
+        checkpoint_val_loss_callback = keras.callbacks.ModelCheckpoint(
+            checkpoint_val_loss,
+            monitor='val_loss',
+            verbose=0,
+            save_best_only=save_best_only,
+            mode='min'
+            )
+        callbacks.append(checkpoint_val_loss_callback)
+        
+        checkpoint_val_acc = checkpoints_path + "-ep{epoch:02d}-val_acc{val_acc:.2f}.h5"
+        checkpoint_val_acc_callback = keras.callbacks.ModelCheckpoint(
+            checkpoint_val_acc,
+            monitor='val_acc',
+            verbose=0,
+            save_best_only=save_best_only,
+            mode='max'
+            )
+        callbacks.append(checkpoint_val_acc_callback)
     ##
     
     if not validate:
