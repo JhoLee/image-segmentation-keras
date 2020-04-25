@@ -8,6 +8,7 @@ from tqdm import tqdm
 from .config import IMAGE_ORDERING
 from ..train import train
 from ..predict import predict, predict_multiple, evaluate
+from ..blur import blur
 
 
 # source m1 , dest m2
@@ -101,5 +102,7 @@ def get_segmentation_model(input, output):
     model.predict_segmentation = MethodType(predict, model)
     model.predict_multiple = MethodType(predict_multiple, model)
     model.evaluate_segmentation = MethodType(evaluate, model)
+    
+    model.blur = MethodType(blur, model)
 
     return model

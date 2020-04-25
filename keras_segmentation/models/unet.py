@@ -74,6 +74,19 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
     [f1, f2, f3, f4, f5] = levels
 
     o = f4
+    
+#     pad_height = 416 - input_height if input_height < 416 else 0
+#     pad_width = 608 - input_width if input_width < 608 else 0
+    
+#     pad_height = (pad_height // 2, pad_height // 2) \
+#         if pad_height % 2 == 0 \
+#         else (pad_heiht // 2 + 1, pad_height // 2)
+#     pad_width = (pad_width // 2, pad_width // 2) \
+#         if pad_width % 2 == 0 \
+#         else (pad_width // 2 + 1, pad_width // 2)
+
+#     o = ZeroPadding2D(padding=(pad_height, pad_width), data_format=IMAGE_ORDERING)(o)
+#     o = (Reshape((256, 256, 3), input_shape=(input_height, input_width, 3)))(o) # 20.04.20
 
     o = (ZeroPadding2D((1, 1), data_format=IMAGE_ORDERING))(o)
     o = (Conv2D(512, (3, 3), padding='valid', data_format=IMAGE_ORDERING))(o)
@@ -102,6 +115,10 @@ def _unet(n_classes, encoder, l1_skip_conn=True, input_height=416,
 
     o = Conv2D(n_classes, (3, 3), padding='same',
                data_format=IMAGE_ORDERING)(o)
+    
+#     o = Reshape((input_height, input_width, 3), input_shape=(256, 256, 3))(o)
+
+#     o = Cropping2D(cropping=(pad_height, pad_width), data_format=IMAGE_ORDERING)(o)
 
     model = get_segmentation_model(img_input, o)
 
@@ -140,7 +157,6 @@ def mobilenet_unet(n_classes, input_height=224, input_width=224,
                   input_height=input_height, input_width=input_width)
     model.model_name = "mobilenet_unet"
     return model
-
 
 if __name__ == '__main__':
     m = unet_mini(101)

@@ -46,13 +46,15 @@ def train(model,
           val_images=None,
           val_annotations=None,
           val_batch_size=2,
+          val_steps=200,
           auto_resume_checkpoint=False,
           load_weights=None,
           steps_per_epoch=512,
           optimizer_name='adadelta',
           log_dir='',
           save_best_only=False,
-          ):
+          save_val_loss=True,
+          save_val_acc=True):
 
     from .models.all_models import model_from_name
     # check if user gives model name instead of the model object
@@ -127,36 +129,10 @@ def train(model,
                 write_images=True
     ) if log_dir != '' else None
     
-    checkpoint = checkpoints_path + "-ep{epoch:02d}.h5"
-    checkpoint_callback = keras.callbacks.ModelCheckpoint(
-        checkpoint,
-        verbose=1,
-        save_best_only=False
-    )
     callbacks = [
         tensorboard_callback,
-        checkpoint_callback,
     ]  
-    if save_best_only:
-        checkpoint_val_loss = checkpoints_path + "-ep{epoch:02d}-val_loss{val_loss:.2f}.h5"
-        checkpoint_val_loss_callback = keras.callbacks.ModelCheckpoint(
-            checkpoint_val_loss,
-            monitor='val_loss',
-            verbose=0,
-            save_best_only=save_best_only,
-            mode='min'
-            )
-        callbacks.append(checkpoint_val_loss_callback)
-        
-        checkpoint_val_acc = checkpoints_path + "-ep{epoch:02d}-val_acc{val_acc:.2f}.h5"
-        checkpoint_val_acc_callback = keras.callbacks.ModelCheckpoint(
-            checkpoint_val_acc,
-            monitor='val_acc',
-            verbose=0,
-            save_best_only=save_best_only,
-            mode='max'
-            )
-        callbacks.append(checkpoint_val_acc_callback)
+
     ##
     
     if not validate:
@@ -164,6 +140,26 @@ def train(model,
         model.fit_generator(train_gen, steps_per_epoch, epochs=epochs, callbacks=callbacks)
         print("End training!")
     else:
+        if save_val_loss==True:
+            checkpoint_val_loss = checkpoints_path + "-best_val_loss.h5"
+            checkpoint_val_loss_callback = keras.callbacks.ModelCheckpoint(
+                checkpoint_val_loss,
+                monitor='val_loss',
+                verbose=0,
+                save_best_only=save_best_only,
+                save_weights_only=True,
+                mode='min')
+            callbacks.append(checkpoint_val_loss_callback)
+        if save_val_acc==True:
+            checkpoint_val_acc = checkpoints_path + "-best_val_acc.h5"
+            checkpoint_val_acc_callback = keras.callbacks.ModelCheckpoint(
+                checkpoint_val_acc,
+                monitor='val_acc',
+                verbose=0,
+                save_best_only=save_best_only,
+                mode='max')
+            callbacks.append(checkpoint_val_acc_callback) 
+            
         print("Start training with validation...")
-        model.fit_generator(train_gen, steps_per_epoch, validation_data=val_gen, validation_steps=200, epochs=epochs, callbacks=callbacks)
+        model.fit_generator(train_gen, steps_per_epoch, validation_data=val_gen, validation_steps=val_steps, epochs=epochs, callbacks=callbacks)
         print("End training with validation!")
